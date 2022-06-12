@@ -16,3 +16,19 @@ provider "aws" {
 resource "aws_vpc" "example" {
   cidr_block = "10.0.0.0/16"
 }
+
+# Bucket S3
+
+resource "aws_s3_bucket" "b" {
+  bucket = "my-tf-test-bucket-terraform-test-2"
+
+  tags = {
+    Name        = "My bucket"
+    Environment = "Dev"
+  }
+}
+
+resource "aws_s3_bucket_acl" "example" {
+  bucket = aws_s3_bucket.b.id
+  acl    = "private"
+}
