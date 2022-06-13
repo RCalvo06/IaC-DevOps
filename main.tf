@@ -1,34 +1,23 @@
-terraform {
-  required_providers {
-    aws = {
-      source  = "hashicorp/aws"
-      version = "~> 3.0"
-    }
-  }
-}
-
 # Configure the AWS Provider
 provider "aws" {
   region = "us-east-1"
 }
 
-# Create a VPC
-resource "aws_vpc" "example" {
-  cidr_block = "10.0.0.0/16"
-}
+data "aws_ami" "ubuntu" {
+  most_recent = true
 
-# Bucket S3
-
-resource "aws_s3_bucket" "b" {
-  bucket = "my-tf-test-bucket-terraform-test-2"
-
-  tags = {
-    Name        = "My bucket"
-    Environment = "Dev"
+  filter {
+    name   = "name"
+    values = ["ubuntu/images/hvm-ssd/ubuntu-focal-20.04-amd64-server-*"]
   }
+
+  filter {
+    name   = "virtualization-type"
+    values = ["hvm"]
+  }
+
+  owners = ["099720109477"]
 }
 
-resource "aws_s3_bucket_acl" "example" {
-  bucket = aws_s3_bucket.b.id
-  acl    = "private"
-}
+variable "ssh_key_path" {}
+variable "vpc_id" {}
